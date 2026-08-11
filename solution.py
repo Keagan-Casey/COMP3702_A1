@@ -18,9 +18,9 @@ Last updated by vp 03/08/26
 
 class Solver:
 
-    STUDENT_NAME = "Crystal Rover" # replace with your name
-    STUDENT_ID = "s4123456"  # replace with your student ID
-    GITHUB_USERNAME = "cool-comp3702-student" # replace with your GitHub username
+    STUDENT_NAME = "Keagan Casey" # replace with your name
+    STUDENT_ID = "s48841595"  # replace with your student ID
+    GITHUB_USERNAME = "Keagan-Casey" # replace with your GitHub username
 
     def __init__(self, game_env):
         self.game_env = game_env
@@ -55,7 +55,10 @@ class Solver:
         #
         #
 
-        pass
+        return [
+    GameEnv.WALK_RIGHT,
+    GameEnv.WALK_RIGHT,
+]
 
     # === A* Search ====================================================================================================
     # TODO: this method is unnecessary if multiple searches on the same environment are not performed
