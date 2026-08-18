@@ -1,6 +1,9 @@
 import sys
 from game_env import GameEnv
+import game_env
 from game_state import GameState
+import heapq
+import itertools
 
 """
 solution.py
@@ -48,17 +51,28 @@ class Solver:
         Find a path which solves the environment using Uniform Cost Search (UCS).
         :return: path (list of actions, where each action is an element of GameEnv.ACTIONS)
         """
+        pq = []
+        counter = itertools.count()
+        visited = {self.game_env.get_init_state(): 0}
+        came_from = {self.game_env.get_init_state(): (None, None)}
+        heapq.heapify(pq)
+        heapq.heappush(pq, (0, next(counter), self.game_env.get_init_state()))
 
-        #
-        #
-        # TODO: Implement your UCS code here.
-        #
-        #
+        while pq:
+            cost, _, state = heapq.heappop(pq) #pop the state with the lowest cost from the priority queue
 
-        return [
-    GameEnv.WALK_RIGHT,
-    GameEnv.WALK_RIGHT,
-]
+            if self.game_env.is_solved(state): #check if the current state is a goal state
+                return self.return_path(state, came_from) #return the path to the goal state
+
+            for action, next_state, action_cost in self.get_successors(state): #get the successors of the current state
+                new_cost = cost + action_cost #calculate the new cost to reach the successor state
+
+                if next_state not in visited or new_cost < visited[next_state]:
+                    visited[next_state] = new_cost
+                    came_from[next_state] = (state, action)
+                    heapq.heappush(pq, (new_cost, next(counter), next_state))
+
+        return None
 
     # === A* Search ====================================================================================================
     # TODO: this method is unnecessary if multiple searches on the same environment are not performed
@@ -113,3 +127,27 @@ class Solver:
         #
 
         pass
+
+    def get_successors(self,state):
+        children = []
+        for action in self.game_env.get_valid_actions(state):
+            next_state, valid, _ = self.game_env.perform_action(state,action)
+            if valid:
+                cost = self.game_env.ACTION_COST[action]
+                children.append((action, next_state,cost))
+        return children
+
+    def return_path(self,state, came_from):
+        """
+        Return the path from the initial state to the given state.
+
+        """
+        path = []
+        parent, action = came_from[state]
+        while parent is not None:
+            path.append(action)
+            parent, action = came_from[parent]
+        return list(reversed(path))
+
+
+    
